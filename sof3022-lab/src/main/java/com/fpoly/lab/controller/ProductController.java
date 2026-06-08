@@ -1,6 +1,8 @@
 package com.fpoly.lab.controller;
 
 import com.fpoly.lab.model.Product;
+import com.fpoly.lab.service.ProductService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,22 +13,22 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final List<Product> productList = new ArrayList<>();
-
-    public ProductController() {
-        productList.add(new Product(1L, "Laptop Acer Nitro", 18500000.0));
-        productList.add(new Product(2L, "Chuột Logitech G102", 400000.0));
+    private final ProductService productService;
+    
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(productList);
+    public ResponseEntity<List<Product>> getProducts() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        product.setId((long) (productList.size() + 1));
-        productList.add(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(product);
+    public ResponseEntity<Product> saveProduct(@RequestBody Product product) {
+        return ResponseEntity.ok(productService.addProduct(product));
     }
+
+    
+   
 }
